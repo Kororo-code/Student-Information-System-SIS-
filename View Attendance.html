@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Summary - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .modal-logo {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-logo-icon {
+            font-size: 16px;
+        }
+
+        .btn-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        /* Overall Attendance Card */
+        .overall-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .overall-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .overall-text span {
+            color: #22c55e;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .stat-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-dot.present { background: #22c55e; }
+        .stat-dot.absent { background: #ef4444; }
+        .stat-dot.excused { background: #f59e0b; }
+
+        .stat-label {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* Attendance Table */
+        .attendance-table-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table thead {
+            background: #f9fafb;
+        }
+
+        .attendance-table th {
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .attendance-table th:last-child {
+            text-align: right;
+        }
+
+        .attendance-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .attendance-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .attendance-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        /* Date Cell */
+        .date-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-icon {
+            width: 32px;
+            height: 32px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .date-info .date-text {
+            font-weight: 500;
+            color: #1f2937;
+            font-size: 13px;
+        }
+
+        .date-info .course-text {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* Status Badge */
+        .status-cell {
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-badge .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-badge.present { color: #16a34a; }
+        .status-badge.present .status-dot { background: #22c55e; }
+
+        .status-badge.absent { color: #dc2626; }
+        .status-badge.absent .status-dot { background: #ef4444; }
+
+        .status-badge.excused { color: #d97706; }
+        .status-badge.excused .status-dot { background: #f59e0b; }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.present { background: #22c55e; }
+        .legend-dot.absent { background: #ef4444; }
+        .legend-dot.excused { background: #f59e0b; }
+
+        /* Course Filter */
+        .course-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            color: #1f2937;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .modal-body {
+                padding: 16px;
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
+
+            .legend {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Container -->
+    <div class="modal-container">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="modal-logo">
+                <span class="modal-logo-icon">🎓</span>
+                <span>SIS Portal</span>
+            </div>
+            <button class="btn-close"><a href="Student Info.html">×</a></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Page Title -->
+            <h1 class="page-title">Attendance Summary</h1>
+
+            <!-- Overall Attendance Card -->
+            <div class="overall-card">
+                <p class="overall-text">Overall Attendance: <span>92%</span></p>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-dot present"></span>
+                        <span class="stat-label"><span class="stat-value">46</span> days</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-dot absent"></span>
+                        <span class="stat-label"><span class="stat-value">3</span> Absent</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-dot excused"></span>
+                        <span class="stat-label"><span class="stat-value">1</span> Excused</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Filter -->
+            <div class="course-filter">
+                <span class="filter-label">Filter by course:</span>
+                <select class="filter-select">
+                    <option value="all">All Courses</option>
+                    <option value="sad">System Analysis and Design</option>
+                    <option value="dld">Digital Logic Design</option>
+                    <option value="webdev">Web Development</option>
+                </select>
+            </div>
+
+            <!-- Attendance Table -->
+            <div class="attendance-table-container">
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 13, 2025</div>
+                                        <div class="course-text">System Analysis and Design</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge present">
+                                    <span class="status-dot"></span>
+                                    Present
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 12, 2025</div>
+                                        <div class="course-text">Digital Logic Design</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge absent">
+                                    <span class="status-dot"></span>
+                                    Absent
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 11, 2025</div>
+                                        <div class="course-text">Web Development</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge excused">
+                                    <span class="status-dot"></span>
+                                    Excused
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 10, 2025</div>
+                                        <div class="course-text">System Analysis and Design</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge present">
+                                    <span class="status-dot"></span>
+                                    Present
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 9, 2025</div>
+                                        <div class="course-text">Object-Oriented Programming</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge absent">
+                                    <span class="status-dot"></span>
+                                    Absent
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    <div class="date-icon">📅</div>
+                                    <div class="date-info">
+                                        <div class="date-text">December 8, 2025</div>
+                                        <div class="course-text">Esports</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge excused">
+                                    <span class="status-dot"></span>
+                                    Excused
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-dot present"></span>
+                    <span>Present</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot absent"></span>
+                    <span>Absent</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot excused"></span>
+                    <span>Excused</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

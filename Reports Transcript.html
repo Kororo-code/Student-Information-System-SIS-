@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Academic Transcript - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Top Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: #1f2937;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .action-bar-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-bar-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .action-bar-subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .action-bar-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-generate {
+            background: #22c55e;
+            color: #ffffff;
+        }
+
+        .btn-generate:hover {
+            background: #16a34a;
+        }
+
+        .btn-download {
+            background: #4285f4;
+            color: #ffffff;
+        }
+
+        .btn-download:hover {
+            background: #1a73e8;
+        }
+
+        .btn-preview {
+            background: #6b7280;
+            color: #ffffff;
+        }
+
+        .btn-preview:hover {
+            background: #4b5563;
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 32px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Transcript Document */
+        .transcript-document {
+            background: #ffffff;
+            width: 100%;
+            max-width: 850px;
+            padding: 48px 56px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        /* University Header */
+        .university-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #1f2937;
+        }
+
+        .university-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .university-address {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .document-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        /* Student Info Section */
+        .student-info-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .info-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        /* Academic Details Section */
+        .academic-details-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .detail-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            color: #1f2937;
+            padding: 8px 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+
+        /* Academic Record Section */
+        .academic-record-section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .generated-date {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* Semester Block */
+        .semester-block {
+            margin-bottom: 24px;
+        }
+
+        .semester-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Grades Table */
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+
+        .grades-table th {
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .grades-table th:nth-child(3),
+        .grades-table th:nth-child(4),
+        .grades-table th:nth-child(5) {
+            text-align: center;
+        }
+
+        .grades-table td {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .grades-table td:nth-child(3),
+        .grades-table td:nth-child(4),
+        .grades-table td:nth-child(5) {
+            text-align: center;
+        }
+
+        .grades-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        /* Semester Summary */
+        .semester-summary {
+            display: flex;
+            justify-content: flex-end;
+            gap: 32px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 4px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .summary-value.gpa {
+            color: #4285f4;
+        }
+
+        /* Additional Records Link */
+        .additional-records {
+            text-align: center;
+            padding: 16px;
+            color: #9ca3af;
+            font-size: 12px;
+            border: 1px dashed #e5e7eb;
+            border-radius: 4px;
+            margin-bottom: 32px;
+        }
+
+        /* Academic Summary */
+        .academic-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .summary-column h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 12px;
+        }
+
+        .summary-row .label {
+            color: #6b7280;
+        }
+
+        .summary-row .value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .summary-row .value.highlight {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        /* Report Options */
+        .report-options {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 16px 0;
+            border-top: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .options-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .checkbox-item input {
+            accent-color: #4285f4;
+        }
+
+        /* Document Footer */
+        .document-footer {
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 10px;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        /* Print Styles */
+        @media print {
+            .action-bar {
+                display: none;
+            }
+
+            body {
+                background: #ffffff;
+            }
+
+            .main-container {
+                padding: 0;
+            }
+
+            .transcript-document {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .transcript-document {
+                padding: 24px;
+            }
+
+            .student-info-section {
+                grid-template-columns: 1fr;
+            }
+
+            .academic-details-section {
+                grid-template-columns: 1fr;
+            }
+
+            .academic-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .action-bar-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Action Bar -->
+    <div class="action-bar">
+        <div class="action-bar-left">
+            <span class="action-bar-title">Generate Reports</span>
+            <span class="action-bar-subtitle">Academic Transcript v2.1</span>
+        </div>
+        <div class="action-bar-buttons">
+            <button class="btn-action btn-generate">
+                <span>📄</span> Generate Report
+            </button>
+            <button class="btn-action btn-download">
+                <span>⬇️</span> Download
+            </button>
+            <button class="btn-action btn-preview">
+                <span>👁️</span> Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Transcript Document -->
+        <div class="transcript-document">
+            <!-- University Header -->
+            <div class="university-header">
+                <h1 class="university-name">University of Cebu</h1>
+                <p class="university-address">Opao St, Cebu City, 6000 Cebu</p>
+                <p class="university-address">Phone: (011) 222-3333 | Email: registrar@uc.edu.ph</p>
+                <h2 class="document-title">Official Academic Transcript</h2>
+            </div>
+
+            <!-- Student Info Section -->
+            <div class="student-info-section">
+                <div class="info-group">
+                    <span class="info-label">Student ID</span>
+                    <span class="info-value">25275983</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Student Name</span>
+                    <span class="info-value">Reyvin Inot</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Program</span>
+                    <span class="info-value">Bachelor of Science in Information Technology</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Date of Birth</span>
+                    <span class="info-value">January 15, 2004</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">reyvin.inot@student.uc.edu.ph</span>
+                </div>
+            </div>
+
+            <!-- Academic Details -->
+            <div class="academic-details-section">
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Matriculation Date</span>
+                        <span class="detail-value">August 15, 2023</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Expected Graduation</span>
+                        <span class="detail-value">May 31, 2027</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Academic Advisor</span>
+                        <span class="detail-value">Dr. Rasty Demecillo</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Student Status</span>
+                        <span class="detail-value">Full-Time Active</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Campus Location</span>
+                        <span class="detail-value">Lapu-Lapu Mandaue</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Degree Type</span>
+                        <span class="detail-value">Undergraduate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Record Section -->
+            <div class="academic-record-section">
+                <div class="section-header">
+                    <h3 class="section-title">Academic Record</h3>
+                    <span class="generated-date">Transcript Generated: December 19, 2025</span>
+                </div>
+
+                <!-- 1st Semester 2024 -->
+                <div class="semester-block">
+                    <h4 class="semester-title">1st Semester 2024-2025</h4>
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Credits</th>
+                                <th>Grade</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>43152</td>
+                                <td>System Analysis and Design</td>
+                                <td>3.0</td>
+                                <td>1.00</td>
+                                <td>12.0</td>
+                            </tr>
+                            <tr>
+                                <td>43128</td>
+                                <td>Object-Oriented Programming</td>
+                                <td>4.0</td>
+                                <td>1.50</td>
+                                <td>12.0</td>
+                            </tr>
+                            <tr>
+                                <td>37336</td>
+                                <td>National Service Training Program</td>
+                                <td>3.0</td>
+                                <td>1.50</td>
+                                <td>9.9</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="semester-summary">
+                        <div class="summary-item">
+                            <div class="summary-label">Total Credits</div>
+                            <div class="summary-value">10.0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">GPA</div>
+                            <div class="summary-value gpa">1.33</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Total Points</div>
+                            <div class="summary-value">33.9</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2nd Semester 2024 -->
+                <div class="semester-block">
+                    <h4 class="semester-title">2nd Semester 2024-2025</h4>
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Credits</th>
+                                <th>Grade</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>43144</td>
+                                <td>Digital Logic Design</td>
+                                <td>3.0</td>
+                                <td>1.00</td>
+                                <td>12.0</td>
+                            </tr>
+                            <tr>
+                                <td>37328</td>
+                                <td>Web Development</td>
+                                <td>4.0</td>
+                                <td>1.25</td>
+                                <td>14.8</td>
+                            </tr>
+                            <tr>
+                                <td>45902</td>
+                                <td>Esports</td>
+                                <td>3.0</td>
+                                <td>1.50</td>
+                                <td>9.9</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="semester-summary">
+                        <div class="summary-item">
+                            <div class="summary-label">Total Credits</div>
+                            <div class="summary-value">10.0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">GPA</div>
+                            <div class="summary-value gpa">1.25</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Total Points</div>
+                            <div class="summary-value">36.7</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Records -->
+                <div class="additional-records">
+                    Additional Semester Records...
+                </div>
+            </div>
+
+            <!-- Academic Summary -->
+            <div class="academic-summary">
+                <div class="summary-column">
+                    <h4>Academic Summary</h4>
+                    <div class="summary-row">
+                        <span class="label">Total Credits Attempted</span>
+                        <span class="value">28.0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Total Credits Earned</span>
+                        <span class="value">28.0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Cumulative GPA</span>
+                        <span class="value">1.28</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Class Standing</span>
+                        <span class="value">Sophomore</span>
+                    </div>
+                </div>
+                <div class="summary-column">
+                    <h4>Degree Progress</h4>
+                    <div class="summary-row">
+                        <span class="label">Required Credits</span>
+                        <span class="value">120.0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Remaining Credits</span>
+                        <span class="value">92.0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Completion</span>
+                        <span class="value">23.3%</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Academic Standing</span>
+                        <span class="value highlight">Good Standing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Options -->
+            <div class="report-options">
+                <span class="options-label">Report Options</span>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Official Seal
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Watermark
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> Draft
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Detailed
+                    </label>
+                </div>
+            </div>
+
+            <!-- Document Footer -->
+            <div class="document-footer">
+                <div class="footer-row">
+                    <span>This transcript is issued by the Office of the Registrar</span>
+                    <span>Page 1 of 1</span>
+                </div>
+                <div class="footer-row">
+                    <span>Transcript ID: TR-2025-12-19-0001</span>
+                    <span>Generated: December 19, 2025</span>
+                </div>
+                <p class="footer-note">This document is not valid without the official university seal and registrar signature.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Grades - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .modal-logo {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-logo-icon {
+            font-size: 16px;
+        }
+
+        .btn-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        /* Overall Grade Card */
+        .overall-grade-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .overall-grade-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .overall-grade-text span {
+            color: #4285f4;
+        }
+
+        /* Grades Table */
+        .grades-table-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grades-table thead {
+            background: #f9fafb;
+        }
+
+        .grades-table th {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .grades-table th:not(:first-child) {
+            text-align: center;
+        }
+
+        .grades-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .grades-table td:not(:first-child) {
+            text-align: center;
+        }
+
+        .grades-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .grades-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        /* Course Name */
+        .course-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        /* Grade Values */
+        .grade-value {
+            color: #4b5563;
+        }
+
+        /* Final Grade */
+        .final-grade {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .final-grade.grade-a {
+            color: #16a34a;
+        }
+
+        .final-grade.grade-b {
+            color: #4285f4;
+        }
+
+        .final-grade.grade-c {
+            color: #f59e0b;
+        }
+
+        .final-grade.grade-d {
+            color: #ef4444;
+        }
+
+        /* View Breakdown Link */
+        .view-breakdown-link {
+            font-size: 14px;
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-breakdown-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Semester Selector */
+        .semester-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .semester-label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .semester-select {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            color: #1f2937;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .semester-select:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
+        /* Student Info */
+        .student-info-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .student-avatar-small {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4285f4 0%, #1a73e8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .student-details .student-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .student-details .student-program {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .modal-body {
+                padding: 16px;
+            }
+
+            .grades-table th,
+            .grades-table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Container -->
+    <div class="modal-container">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="modal-logo">
+                <span class="modal-logo-icon">🎓</span>
+                <span>SIS Portal</span>
+            </div>
+            <button class="btn-close"><a href="Student Info.html">×</a></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Page Title -->
+            <h1 class="page-title">My Grades</h1>
+
+            <!-- Student Info -->
+            <div class="student-info-bar">
+                <div class="student-avatar-small">RI</div>
+                <div class="student-details">
+                    <div class="student-name">Reyvin Inot</div>
+                    <div class="student-program">BSIT - 2nd Year</div>
+                </div>
+            </div>
+
+            <!-- Overall Grade Card -->
+            <div class="overall-grade-card">
+                <p class="overall-grade-text">Overall Grade: <span>GPA 1.25</span></p>
+            </div>
+
+            <!-- Semester Selector -->
+            <div class="semester-selector">
+                <span class="semester-label">Semester:</span>
+                <select class="semester-select">
+                    <option value="2nd-2025">2nd Sem 2025-2026</option>
+                    <option value="1st-2025">1st Sem 2025-2026</option>
+                    <option value="2nd-2024">2nd Sem 2024-2025</option>
+                </select>
+            </div>
+
+            <!-- Grades Table -->
+            <div class="grades-table-container">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Prelim</th>
+                            <th>Midterm</th>
+                            <th>Final Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="course-name">System Analysis and Design</td>
+                            <td class="grade-value">92</td>
+                            <td class="grade-value">95</td>
+                            <td><span class="final-grade grade-a">1.00</span></td>
+                        </tr>
+                        <tr>
+                            <td class="course-name">Digital Logic Design</td>
+                            <td class="grade-value">88</td>
+                            <td class="grade-value">90</td>
+                            <td><span class="final-grade grade-a">1.25</span></td>
+                        </tr>
+                        <tr>
+                            <td class="course-name">Web Development</td>
+                            <td class="grade-value">85</td>
+                            <td class="grade-value">88</td>
+                            <td><span class="final-grade grade-b">1.50</span></td>
+                        </tr>
+                        <tr>
+                            <td class="course-name">Object-Oriented Programming</td>
+                            <td class="grade-value">87</td>
+                            <td class="grade-value">89</td>
+                            <td><span class="final-grade grade-b">1.50</span></td>
+                        </tr>
+                        <tr>
+                            <td class="course-name">Esports</td>
+                            <td class="grade-value">90</td>
+                            <td class="grade-value">92</td>
+                            <td><span class="final-grade grade-a">1.25</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- View Breakdown Link -->
+            <a href="#" class="view-breakdown-link">
+                View grade breakdown for each course →
+            </a>
+        </div>
+    </div>
+</body>
+</html>

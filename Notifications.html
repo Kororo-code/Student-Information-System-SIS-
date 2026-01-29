@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .modal-logo {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-logo-icon {
+            font-size: 16px;
+        }
+
+        .btn-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Title Row */
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .btn-mark-read {
+            padding: 8px 16px;
+            background: #ffffff;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-mark-read:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        /* Notifications List */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Notification Item */
+        .notification-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #fafafa;
+            margin: 0 -24px;
+            padding: 16px 24px;
+        }
+
+        /* Unread Indicator */
+        .unread-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4285f4;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .unread-dot.read {
+            background: #e5e7eb;
+        }
+
+        /* Notification Content */
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .notification-item.read .notification-title {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .notification-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Notification Time */
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* View All Link */
+        .view-all-container {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .view-all-link {
+            font-size: 14px;
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Notification Types */
+        .notification-item.reminder .unread-dot { background: #4285f4; }
+        .notification-item.schedule .unread-dot { background: #4285f4; }
+        .notification-item.grade .unread-dot { background: #4285f4; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .modal-body {
+                padding: 16px;
+            }
+
+            .title-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .notification-item:hover {
+                margin: 0 -16px;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Container -->
+    <div class="modal-container">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="modal-logo">
+                <span class="modal-logo-icon">🎓</span>
+                <span>SIS Portal</span>
+            </div>
+            <button class="btn-close"><a href="Dashboard.html">×</a></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Title Row -->
+            <div class="title-row">
+                <h1 class="page-title">Notifications</h1>
+                <button class="btn-mark-read">Mark All As Read</button>
+            </div>
+
+            <!-- Notifications List -->
+            <div class="notifications-list">
+                <!-- Notification 1 - Unread -->
+                <div class="notification-item reminder">
+                    <div class="unread-dot"></div>
+                    <div class="notification-content">
+                        <h3 class="notification-title">Assignment Due Reminder</h3>
+                        <p class="notification-desc">System Analysis and Design assignment is due tomorrow. Don't forget to submit!</p>
+                    </div>
+                    <span class="notification-time">2 hours ago</span>
+                </div>
+
+                <!-- Notification 2 - Unread -->
+                <div class="notification-item schedule">
+                    <div class="unread-dot"></div>
+                    <div class="notification-content">
+                        <h3 class="notification-title">Schedule Change Notification</h3>
+                        <p class="notification-desc">Your Web Development class has been moved to Room M4 on December 15.</p>
+                    </div>
+                    <span class="notification-time">Yesterday</span>
+                </div>
+
+                <!-- Notification 3 - Unread -->
+                <div class="notification-item grade">
+                    <div class="unread-dot"></div>
+                    <div class="notification-content">
+                        <h3 class="notification-title">Grade Updated</h3>
+                        <p class="notification-desc">Your midterm grade for Digital Logic Design has been posted.</p>
+                    </div>
+                    <span class="notification-time">3 days ago</span>
+                </div>
+
+                <!-- Notification 4 - Read -->
+                <div class="notification-item read">
+                    <div class="unread-dot read"></div>
+                    <div class="notification-content">
+                        <h3 class="notification-title">New Course Resource</h3>
+                        <p class="notification-desc">Dr. Demecillo uploaded 2 new course materials for System Analysis and Design.</p>
+                    </div>
+                    <span class="notification-time">3 days ago</span>
+                </div>
+
+                <!-- Notification 5 - Read -->
+                <div class="notification-item read">
+                    <div class="unread-dot read"></div>
+                    <div class="notification-content">
+                        <h3 class="notification-title">System Maintenance</h3>
+                        <p class="notification-desc">The SIS portal will undergo maintenance on December 20, 2025 from 12:00 AM to 6:00 AM.</p>
+                    </div>
+                    <span class="notification-time">1 week ago</span>
+                </div>
+            </div>
+
+            <!-- View All Link -->
+            <div class="view-all-container">
+                <a href="#" class="view-all-link">View All Notifications</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
